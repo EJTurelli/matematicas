@@ -1,8 +1,8 @@
 var tablas = {
     tiempoEntrePreguntas: 0,
     cantidadDePreguntas: 0,
-    a: 0,
-    b: 0,
+    a: [],
+    b: [],
     contadorDePreguntas: 0,
     contadorDeRespuestasOk: 0,
     respuesta: 0,
@@ -12,10 +12,25 @@ var tablas = {
     contadorDePreguntasPorTabla:[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     contadorDeRespuestasOkPorTabla:[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 
+    preguntaRepetida: function () {
+        for (i=0; i<this.contadorDePreguntas; i++) {
+            if (this.a[this.contadorDePreguntas]== this.a[i]) {
+                if (this.b[this.contadorDePreguntas]== this.b[i]) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    },
+
   	generoPregunta: function() {
-        this.a = Math.floor((Math.random() * 8) + 2);
-        this.b = Math.floor((Math.random() * 8) + 2);
-        this.respuesta = this.a*this.b;
+        do {
+            this.a[this.contadorDePreguntas] = Math.floor((Math.random() * 8) + 2);
+            this.b[this.contadorDePreguntas] = Math.floor((Math.random() * 8) + 2);
+        } while (this.preguntaRepetida())
+
+        this.respuesta = this.a[this.contadorDePreguntas]*this.b[this.contadorDePreguntas];
         this.tiempoDeInicio = (new Date()).valueOf();
     },
 
@@ -26,27 +41,25 @@ var tablas = {
         if (respuesta == (this.respuesta)) {
             salida = true;
             this.contadorDeRespuestasOk++;
-            this.contadorDeRespuestasOkPorTabla[this.a]++;
-            this.contadorDeRespuestasOkPorTabla[this.b]++;
+            this.contadorDeRespuestasOkPorTabla[this.a[this.contadorDePreguntas]]++;
+            this.contadorDeRespuestasOkPorTabla[this.b[this.contadorDePreguntas]]++;
         }
 
-        this.contadorDePreguntas++;
         t = (new Date()).valueOf() - this.tiempoDeInicio;
         this.demora += t;
 
-        this.contadorDePreguntasPorTabla[this.a]++;
-        this.contadorDePreguntasPorTabla[this.b]++;
-        this.demorasPorTabla[this.a] += t;
-        this.demorasPorTabla[this.b] += t;
+        this.contadorDePreguntasPorTabla[this.a[this.contadorDePreguntas]]++;
+        this.contadorDePreguntasPorTabla[this.b[this.contadorDePreguntas]]++;
+        this.demorasPorTabla[this.a[this.contadorDePreguntas]] += t;
+        this.demorasPorTabla[this.b[this.contadorDePreguntas]] += t;
 
-        this.a = 0;
-        this.b = 0;
+        this.contadorDePreguntas++;
 
         return salida;
     },
 
-    init: function() {
-        $('#tablas').html('<h1>Tablas</h1>'
+    init: function(zona) {
+        $('#'+zona).html('<h1>Tablas</h1>'
         + '<div class="form-group">'
         + '<input type="text" id="ingreso"/>'
         + '</div>'
@@ -67,8 +80,8 @@ var tablas = {
     comenzar: function() {
         this.tiempoEntrePreguntas = 2;
         this.cantidadDePreguntas = 20;
-        this.a = 0;
-        this.b = 0;
+        this.a = [];
+        this.b = [];
         this.contadorDePreguntas = 0;
         this.contadorDeRespuestasOk = 0;
         this.respuesta = 0;
@@ -91,7 +104,7 @@ var tablas = {
         $('#ingreso').val('');
         $('#resultado').attr('class', 'invisible');
         $('#estado').html('');
-        $('#ingreso').attr('placeholder', this.a + " x " + this.b );
+        $('#ingreso').attr('placeholder', this.a[this.contadorDePreguntas] + " x " + this.b[this.contadorDePreguntas] );
         $('#ingreso').focus();
 
         this.mostrarProgreso();
