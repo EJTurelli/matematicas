@@ -1,4 +1,6 @@
-var tablas = {
+var sumas = {
+    minimo: 0,
+    maximo: 0,
     tiempoEntrePreguntas: 0,
     cantidadDePreguntas: 0,
     a: [],
@@ -8,9 +10,6 @@ var tablas = {
     respuesta: 0,
     tiempoDeInicio: 0,
     demora: 0,
-    demorasPorTabla:[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    contadorDePreguntasPorTabla:[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    contadorDeRespuestasOkPorTabla:[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 
     preguntaRepetida: function () {
         for (i=0; i<this.contadorDePreguntas; i++) {
@@ -26,11 +25,11 @@ var tablas = {
 
   	generoPregunta: function() {
         do {
-            this.a[this.contadorDePreguntas] = Math.floor((Math.random() * 8) + 2);
-            this.b[this.contadorDePreguntas] = Math.floor((Math.random() * 8) + 2);
+            this.a[this.contadorDePreguntas] = Math.floor((Math.random() * (this.maximo-this.minimo+1)) + this.minimo);
+            this.b[this.contadorDePreguntas] = Math.floor((Math.random() * (this.maximo-this.minimo+1)) + this.minimo);
         } while (this.preguntaRepetida())
 
-        this.respuesta = this.a[this.contadorDePreguntas]*this.b[this.contadorDePreguntas];
+        this.respuesta = this.a[this.contadorDePreguntas]+this.b[this.contadorDePreguntas];
         this.tiempoDeInicio = (new Date()).valueOf();
     },
 
@@ -41,31 +40,24 @@ var tablas = {
         if (respuesta == (this.respuesta)) {
             salida = true;
             this.contadorDeRespuestasOk++;
-            this.contadorDeRespuestasOkPorTabla[this.a[this.contadorDePreguntas]]++;
-            this.contadorDeRespuestasOkPorTabla[this.b[this.contadorDePreguntas]]++;
         }
 
         t = (new Date()).valueOf() - this.tiempoDeInicio;
         this.demora += t;
-
-        this.contadorDePreguntasPorTabla[this.a[this.contadorDePreguntas]]++;
-        this.contadorDePreguntasPorTabla[this.b[this.contadorDePreguntas]]++;
-        this.demorasPorTabla[this.a[this.contadorDePreguntas]] += t;
-        this.demorasPorTabla[this.b[this.contadorDePreguntas]] += t;
 
         this.contadorDePreguntas++;
 
         return salida;
     },
 
-    init: function(zona) {
+    init: function(zona, minimo, maximo) {
         $('#'+zona).html('<br><div class="form-group">'
         + '<input type="text" id="ingreso"/>'
         + '</div>'
         + '<div class="progress" id="divProgreso">'
         + '  <div class="progress-bar" id="progreso" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0</div>'
         + '</div>'
-        + '<button type="button" id="botonComenzar" onsubmit="#" onclick="tablas.comenzar()">Comenzar con Tablas</button>'
+        + '<button type="button" id="botonComenzar" onsubmit="#" onclick="sumas.comenzar('+minimo+', '+maximo+')">Comenzar con sumas</button>'
         + '<h3 id="resultado" role="alert"></h3>'
         + '<div id="estado"></div>');
 
@@ -73,10 +65,12 @@ var tablas = {
         $('#divProgreso').attr('class', 'progress invisible');
         $('#botonComenzar').attr('class', 'btn btn-primary visible');   
 
-        $('#ingreso').on('keypress', function(e){tablas.verificar(e)});             
+        $('#ingreso').on('keypress', function(e){sumas.verificar(e)});             
     },
 
-    comenzar: function() {
+    comenzar: function(minimo, maximo) {
+        this.minimo = minimo;
+        this.maximo = maximo;
         this.tiempoEntrePreguntas = 2;
         this.cantidadDePreguntas = 20;
         this.a = [];
@@ -86,9 +80,6 @@ var tablas = {
         this.respuesta = 0;
         this.tiempoDeInicio = 0;
         this.demora = 0;
-        this.demorasPorTabla = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-        this.contadorDePreguntasPorTabla = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-        this.contadorDeRespuestasOkPorTabla = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
         $('#ingreso').attr('class', 'form-control visible');
         $('#divProgreso').attr('class', 'progress visible');
@@ -103,7 +94,7 @@ var tablas = {
         $('#ingreso').val('');
         $('#resultado').attr('class', 'invisible');
         $('#estado').html('');
-        $('#ingreso').attr('placeholder', this.a[this.contadorDePreguntas] + " x " + this.b[this.contadorDePreguntas] );
+        $('#ingreso').attr('placeholder', this.a[this.contadorDePreguntas] + " + " + this.b[this.contadorDePreguntas] );
         $('#ingreso').focus();
 
         this.mostrarProgreso();
@@ -134,7 +125,7 @@ var tablas = {
         }
         
         if (this.contadorDePreguntas<this.cantidadDePreguntas) {
-            setTimeout(function(){ tablas.preguntar() }, this.tiempoEntrePreguntas*1000)
+            setTimeout(function(){ sumas.preguntar() }, this.tiempoEntrePreguntas*1000)
         }
         else {
             setTimeout(function(){ $('#resultado').attr('class', 'invisible') }, this.tiempoEntrePreguntas*1000)
@@ -149,26 +140,6 @@ var tablas = {
                 + '<li>Incorrectas= ' + (this.contadorDePreguntas - this.contadorDeRespuestasOk)  + "</li>" 
                 + '<li>Porcentaje= ' + (this.contadorDeRespuestasOk/this.contadorDePreguntas*100).toFixed(2) + "</li>"
                 + '<li>Tiempo Promedio [seg]= ' + (this.demora/this.contadorDePreguntas/1000).toFixed(2) + "</li></ul>";
-
-            tmp += '<p><table class="table table-hover"><thead>'
-                + '<tr class="text-center"><th scope="col">Tabla</th><th scope="col">Correctas</th><th scope="col">Incorrectas</th><th scope="col">%</th><th scope="col">Tiempo Promedio</th></tr>'
-                + '</thead><tbody>';
-
-            for (i = 2; i < 10; i++) {
-
-                if (this.contadorDePreguntasPorTabla[i]>0) {
-                    tmp += ((this.contadorDePreguntasPorTabla[i] == this.contadorDeRespuestasOkPorTabla[i])?'<tr class="text-center">':'<tr class="table-danger text-center">')
-                        + '<th scope="row">' + i + '</td> ' 
-                        + '<td>' + this.contadorDeRespuestasOkPorTabla[i] + "</td>" 
-                        + '<td>' + (this.contadorDePreguntasPorTabla[i] - this.contadorDeRespuestasOkPorTabla[i])  + "</td>" 
-                        + '<td>' + (this.contadorDeRespuestasOkPorTabla[i]/this.contadorDePreguntasPorTabla[i]*100).toFixed(2) + "</td>"
-                        + '<td>' + (this.demorasPorTabla[i]/this.contadorDePreguntasPorTabla[i]/1000).toFixed(2) + ' seg.</td>'
-                        + '</tr>';
-                }
-
-            }            
-
-            tmp += '</tbody></table>';
 
             $('#estado').html(tmp);
 
