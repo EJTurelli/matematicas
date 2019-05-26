@@ -130,7 +130,7 @@ var sumas = {
         tmp = '<ul>' 
             + '<li>Correctas= ' + this.contadorDeRespuestasOk + "</li>" 
             + '<li>Incorrectas= ' + (this.contadorDePreguntas - this.contadorDeRespuestasOk)  + "</li>" 
-            + '<li>Porcentaje= ' + (this.contadorDeRespuestasOk/this.contadorDePreguntas*100).toFixed(2) + "</li>"
+            + '<li>Eficacia= ' + (this.contadorDeRespuestasOk/this.contadorDePreguntas*100).toFixed(2) + "%</li>"
             + '<li>Tiempo Promedio [seg]= ' + (this.demora/this.contadorDePreguntas/1000).toFixed(2) + "</li></ul>";
 
         $('#final').html(tmp);

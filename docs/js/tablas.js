@@ -140,28 +140,27 @@ var tablas = {
         tmp = '<ul>' 
             + '<li>Correctas= ' + this.contadorDeRespuestasOk + "</li>" 
             + '<li>Incorrectas= ' + (this.contadorDePreguntas - this.contadorDeRespuestasOk)  + "</li>" 
-            + '<li>Porcentaje= ' + (this.contadorDeRespuestasOk/this.contadorDePreguntas*100).toFixed(2) + "</li>"
+            + '<li>Eficacia= ' + (this.contadorDeRespuestasOk/this.contadorDePreguntas*100).toFixed(2) + "%</li>"
             + '<li>Tiempo Promedio [seg]= ' + (this.demora/this.contadorDePreguntas/1000).toFixed(2) + "</li></ul>";
 
-        tmp += '<p><table class="table table-hover"><thead>'
-            + '<tr class="text-center"><th scope="col">Tabla</th><th scope="col">Correctas</th><th scope="col">Incorrectas</th><th scope="col">%</th><th scope="col">Tiempo Promedio</th></tr>'
+        tmp += '<div class="table-responsive"><table class="table table-hover"><thead>'
+            + '<tr class="text-center"><th scope="col">Tabla</th><th scope="col">Eficacia</th><th scope="col">Tiempo Promedio</th></tr>'
             + '</thead><tbody>';
 
         for (i = 2; i < 10; i++) {
 
             if (this.contadorDePreguntasPorTabla[i]>0) {
                 tmp += ((this.contadorDePreguntasPorTabla[i] == this.contadorDeRespuestasOkPorTabla[i])?'<tr class="text-center">':'<tr class="table-danger text-center">')
-                    + '<th scope="row">' + i + '</td> ' 
-                    + '<td>' + this.contadorDeRespuestasOkPorTabla[i] + "</td>" 
-                    + '<td>' + (this.contadorDePreguntasPorTabla[i] - this.contadorDeRespuestasOkPorTabla[i])  + "</td>" 
-                    + '<td>' + (this.contadorDeRespuestasOkPorTabla[i]/this.contadorDePreguntasPorTabla[i]*100).toFixed(2) + "</td>"
-                    + '<td>' + (this.demorasPorTabla[i]/this.contadorDePreguntasPorTabla[i]/1000).toFixed(2) + ' seg.</td>'
+                    + '<th scope="row">' + i + '</td>' 
+                    + '<td>' + (this.contadorDeRespuestasOkPorTabla[i]/this.contadorDePreguntasPorTabla[i]*100).toFixed(2) + '% ('
+                    + this.contadorDeRespuestasOkPorTabla[i] + '/' + (this.contadorDePreguntasPorTabla[i] - this.contadorDeRespuestasOkPorTabla[i]) + ')</td>'
+                    + '<td>' + (this.demorasPorTabla[i]/this.contadorDePreguntasPorTabla[i]/1000).toFixed(2) + ' seg.</td>' 
                     + '</tr>';
             }
 
         }            
 
-        tmp += '</tbody></table>';
+        tmp += '</tbody></table></div>';
 
         $('#final').html(tmp);
         $('#card-final').removeClass('d-none');
