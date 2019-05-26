@@ -1,6 +1,8 @@
 
 # Matemáticas
-Desarrollado pensando en niños que necesitan practicar las operaciones básicas de las matemáticas
+Desarrollado pensando en niños que necesitan practicar las operaciones básicas de las matemáticas.
+
+[https://ejturelli.github.io/matematicas](https://ejturelli.github.io/matematicas)
 
 ## Sumas y Restas
 Se presentan diferentes opciones de sumas y restas dependiendo del grado de dificultad, cada una de las opciones generan 10 sumas o restas de 2 números aleatorios, al final de la serie se muestra un resultado final con la siguiente información
