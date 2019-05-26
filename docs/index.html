@@ -21,7 +21,7 @@
   <body>
     <nav class="navbar navbar-expand-md navbar-dark bg-primary">
         <div class="container">
-          <a class="navbar-brand" href="#">Matemáticas</a>
+          <a class="navbar-brand" href="#" onclick="location.reload()">Matemáticas</a>
       
             <ul class="nav navbar-nav ml-auto">
                 <li class="nav-item">
@@ -77,6 +77,10 @@
 
         <div class="row" id="zona">
             <div class="col-md-12 mb-4">
+                <div class="progress d-none" id="divProgreso">
+                    <div class="progress-bar" id="progreso" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <br>
                 <input class="form-control d-none" type="text" id="ingreso">
                 <div id="resultado"></div>
                 <div class="card bg-light mb-4 d-none" id="card-final">

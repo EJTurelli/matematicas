@@ -83,6 +83,7 @@ var tablas = {
         this.contadorDeRespuestasOkPorTabla = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
         $('#card-final').addClass('d-none');
+        $('#divProgreso').removeClass('d-none');
         $('#ingreso').removeClass('d-none');
        
         this.preguntar();
@@ -105,7 +106,6 @@ var tablas = {
 
         $('#progreso').attr('aria-valuenow', porcentaje);
         $('#progreso').attr('style', 'width: ' + porcentaje + '%;');
-        //$('#progreso').html(porcentaje + '%');
     },
 
     verificar: function (e) {
@@ -136,6 +136,7 @@ var tablas = {
 
         $('#resultado').addClass('d-none');          
         $('#ingreso').addClass('d-none');          
+        $('#divProgreso').addClass('d-none');          
 
         tmp = '<ul>' 
             + '<li>Correctas= ' + this.contadorDeRespuestasOk + "</li>" 
