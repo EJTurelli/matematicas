@@ -58,27 +58,19 @@ var tablas = {
         return salida;
     },
 
-    init: function(zona) {
-        $('#'+zona).html('<br><div class="form-group">'
-        + '<input type="text" id="ingreso"/>'
-        + '</div>'
-        + '<div class="progress" id="divProgreso">'
-        + '  <div class="progress-bar" id="progreso" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0</div>'
-        + '</div>'
-        + '<button type="button" id="botonComenzar" onsubmit="#" onclick="tablas.comenzar()">Comenzar con Tablas</button>'
-        + '<h3 id="resultado" role="alert"></h3>'
-        + '<div id="estado"></div>');
+    iniciar: function () {
+        $('#opciones').addClass('d-none');
 
-        $('#ingreso').attr('class', 'form-control invisible');
-        $('#divProgreso').attr('class', 'progress invisible');
-        $('#botonComenzar').attr('class', 'btn btn-primary visible');   
+        this.tiempoEntrePreguntas = 2;
+        this.cantidadDePreguntas = 2;
 
-        $('#ingreso').on('keypress', function(e){tablas.verificar(e)});             
+        $('#boton').on('click', function(){tablas.comenzar()});          
+        $('#ingreso').on('keypress', function(e){tablas.verificar(e)});   
+    
+        this.comenzar();
     },
 
     comenzar: function() {
-        this.tiempoEntrePreguntas = 2;
-        this.cantidadDePreguntas = 20;
         this.a = [];
         this.b = [];
         this.contadorDePreguntas = 0;
@@ -90,19 +82,18 @@ var tablas = {
         this.contadorDePreguntasPorTabla = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         this.contadorDeRespuestasOkPorTabla = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-        $('#ingreso').attr('class', 'form-control visible');
-        $('#divProgreso').attr('class', 'progress visible');
-        $('#botonComenzar').attr('class', 'btn btn-primary invisible');   
-
+        $('#card-final').addClass('d-none');
+        $('#ingreso').removeClass('d-none');
+       
         this.preguntar();
     },
 
     preguntar: function() {
         this.generoPregunta();
 
+        $('#resultado').addClass('d-none');        
+
         $('#ingreso').val('');
-        $('#resultado').attr('class', 'invisible');
-        $('#estado').html('');
         $('#ingreso').attr('placeholder', this.a[this.contadorDePreguntas] + " x " + this.b[this.contadorDePreguntas] );
         $('#ingreso').focus();
 
@@ -114,14 +105,13 @@ var tablas = {
 
         $('#progreso').attr('aria-valuenow', porcentaje);
         $('#progreso').attr('style', 'width: ' + porcentaje + '%;');
-        $('#progreso').html(porcentaje + '%');
+        //$('#progreso').html(porcentaje + '%');
     },
 
     verificar: function (e) {
         var tmp = '';
             
         tecla = (document.all) ? e.keyCode : e.which;
-
         if (tecla != 13) return;
 
         if (this.comparoRespuesta($('#ingreso').val())) {
@@ -132,47 +122,49 @@ var tablas = {
             $('#resultado').html('ERROR !!!! (era ' + (this.respuesta) + ')');
             $('#resultado').attr('class', 'alert alert-danger');
         }
-        
+
         if (this.contadorDePreguntas<this.cantidadDePreguntas) {
             setTimeout(function(){ tablas.preguntar() }, this.tiempoEntrePreguntas*1000)
         }
         else {
-            setTimeout(function(){ $('#resultado').attr('class', 'invisible') }, this.tiempoEntrePreguntas*1000)
-            
-            $('#ingreso').attr('class', 'form-control invisible');
-            $('#divProgreso').attr('class', 'progress invisible');
-            $('#botonComenzar').attr('class', 'btn btn-primary visible');   
-
-    
-            tmp = '<h3>Resultado</h3><ul>' 
-                + '<li>Correctas= ' + this.contadorDeRespuestasOk + "</li>" 
-                + '<li>Incorrectas= ' + (this.contadorDePreguntas - this.contadorDeRespuestasOk)  + "</li>" 
-                + '<li>Porcentaje= ' + (this.contadorDeRespuestasOk/this.contadorDePreguntas*100).toFixed(2) + "</li>"
-                + '<li>Tiempo Promedio [seg]= ' + (this.demora/this.contadorDePreguntas/1000).toFixed(2) + "</li></ul>";
-
-            tmp += '<p><table class="table table-hover"><thead>'
-                + '<tr class="text-center"><th scope="col">Tabla</th><th scope="col">Correctas</th><th scope="col">Incorrectas</th><th scope="col">%</th><th scope="col">Tiempo Promedio</th></tr>'
-                + '</thead><tbody>';
-
-            for (i = 2; i < 10; i++) {
-
-                if (this.contadorDePreguntasPorTabla[i]>0) {
-                    tmp += ((this.contadorDePreguntasPorTabla[i] == this.contadorDeRespuestasOkPorTabla[i])?'<tr class="text-center">':'<tr class="table-danger text-center">')
-                        + '<th scope="row">' + i + '</td> ' 
-                        + '<td>' + this.contadorDeRespuestasOkPorTabla[i] + "</td>" 
-                        + '<td>' + (this.contadorDePreguntasPorTabla[i] - this.contadorDeRespuestasOkPorTabla[i])  + "</td>" 
-                        + '<td>' + (this.contadorDeRespuestasOkPorTabla[i]/this.contadorDePreguntasPorTabla[i]*100).toFixed(2) + "</td>"
-                        + '<td>' + (this.demorasPorTabla[i]/this.contadorDePreguntasPorTabla[i]/1000).toFixed(2) + ' seg.</td>'
-                        + '</tr>';
-                }
-
-            }            
-
-            tmp += '</tbody></table>';
-
-            $('#estado').html(tmp);
-
+            setTimeout(function(){ tablas.mostrarFinal() }, this.tiempoEntrePreguntas*1000)
         }
+
+    },
+
+    mostrarFinal: function() {
+
+        $('#resultado').addClass('d-none');          
+        $('#ingreso').addClass('d-none');          
+
+        tmp = '<ul>' 
+            + '<li>Correctas= ' + this.contadorDeRespuestasOk + "</li>" 
+            + '<li>Incorrectas= ' + (this.contadorDePreguntas - this.contadorDeRespuestasOk)  + "</li>" 
+            + '<li>Porcentaje= ' + (this.contadorDeRespuestasOk/this.contadorDePreguntas*100).toFixed(2) + "</li>"
+            + '<li>Tiempo Promedio [seg]= ' + (this.demora/this.contadorDePreguntas/1000).toFixed(2) + "</li></ul>";
+
+        tmp += '<p><table class="table table-hover"><thead>'
+            + '<tr class="text-center"><th scope="col">Tabla</th><th scope="col">Correctas</th><th scope="col">Incorrectas</th><th scope="col">%</th><th scope="col">Tiempo Promedio</th></tr>'
+            + '</thead><tbody>';
+
+        for (i = 2; i < 10; i++) {
+
+            if (this.contadorDePreguntasPorTabla[i]>0) {
+                tmp += ((this.contadorDePreguntasPorTabla[i] == this.contadorDeRespuestasOkPorTabla[i])?'<tr class="text-center">':'<tr class="table-danger text-center">')
+                    + '<th scope="row">' + i + '</td> ' 
+                    + '<td>' + this.contadorDeRespuestasOkPorTabla[i] + "</td>" 
+                    + '<td>' + (this.contadorDePreguntasPorTabla[i] - this.contadorDeRespuestasOkPorTabla[i])  + "</td>" 
+                    + '<td>' + (this.contadorDeRespuestasOkPorTabla[i]/this.contadorDePreguntasPorTabla[i]*100).toFixed(2) + "</td>"
+                    + '<td>' + (this.demorasPorTabla[i]/this.contadorDePreguntasPorTabla[i]/1000).toFixed(2) + ' seg.</td>'
+                    + '</tr>';
+            }
+
+        }            
+
+        tmp += '</tbody></table>';
+
+        $('#final').html(tmp);
+        $('#card-final').removeClass('d-none');
 
     }
 
