@@ -54,7 +54,7 @@ var sumas = {
         $('#opciones').addClass('d-none');
 
         this.tiempoEntrePreguntas = 2;
-        this.cantidadDePreguntas = 2;
+        this.cantidadDePreguntas = 10;
 
         $('#boton').on('click', function(){sumas.comenzar(minimo, maximo)});          
         $('#ingreso').on('keypress', function(e){sumas.verificar(e)});   

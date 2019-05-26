@@ -62,7 +62,7 @@ var tablas = {
         $('#opciones').addClass('d-none');
 
         this.tiempoEntrePreguntas = 2;
-        this.cantidadDePreguntas = 2;
+        this.cantidadDePreguntas = 20;
 
         $('#boton').on('click', function(){tablas.comenzar()});          
         $('#ingreso').on('keypress', function(e){tablas.verificar(e)});   
@@ -150,7 +150,7 @@ var tablas = {
         for (i = 2; i < 10; i++) {
 
             if (this.contadorDePreguntasPorTabla[i]>0) {
-                tmp += ((this.contadorDePreguntasPorTabla[i] == this.contadorDeRespuestasOkPorTabla[i])?'<tr class="text-center">':'<tr class="table-danger text-center">')
+                tmp += ((this.contadorDePreguntasPorTabla[i] == this.contadorDeRespuestasOkPorTabla[i])?'<tr class="table-success text-center">':'<tr class="table-danger text-center">')
                     + '<th scope="row">' + i + '</td>' 
                     + '<td>' + (this.contadorDeRespuestasOkPorTabla[i]/this.contadorDePreguntasPorTabla[i]*100).toFixed(2) + '% ('
                     + this.contadorDeRespuestasOkPorTabla[i] + '/' + (this.contadorDePreguntasPorTabla[i] - this.contadorDeRespuestasOkPorTabla[i]) + ')</td>'
