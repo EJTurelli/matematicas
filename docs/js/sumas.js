@@ -52,6 +52,7 @@ var sumas = {
 
     iniciar: function (minimo, maximo) {
         $('#opciones').addClass('d-none');
+        $('#zona').removeClass('d-none');
 
         this.tiempoEntrePreguntas = 2;
         this.cantidadDePreguntas = 10;

@@ -60,6 +60,7 @@ var tablas = {
 
     iniciar: function () {
         $('#opciones').addClass('d-none');
+        $('#zona').removeClass('d-none');
 
         this.tiempoEntrePreguntas = 2;
         this.cantidadDePreguntas = 20;
